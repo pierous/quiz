@@ -23,6 +23,16 @@ section > div {
 	padding: 20px;
 }
 
+table {
+	height: 100%;
+	width: 100%;
+}
+
+tr {
+	text-align: center;
+	bottom: middle;
+}
+
 header, nav, section {
 	background: #eee;
 	text-align: center;
