@@ -55,9 +55,9 @@ exports.create = function(req, res) {
 
 	quiz.validate().then(function(err) {
 		if (err) {
-			res.render('quizes/new', { quiz:quiz, errors: err.errors });
+			res.render('quizes/new', { quiz: quiz, errors: err.errors });
 		} else {
-			//guarda en BD los campos pregunta y respuesta de quiz
+			// guarda en BD los campos pregunta y respuesta de quiz
 			quiz.save({fields: ["pregunta", "respuesta"]}).then(function() {
 				res.redirect('/quizes');
 			});		// Redirección HTTP (URL relativa) lista de preguntas
@@ -65,8 +65,34 @@ exports.create = function(req, res) {
 	});
 };
 
+// GET /quizes/:id/edit
+exports.edit = function(req, res) {
+	var quiz = req.quiz;		// autoload de instancia quiz
+
+	res.render('quizes/edit', { quiz: quiz, errors: [] });
+};
+
+// PUT /quizes/:id
+exports.update = function(req, res) {
+	req.quiz.pregunta = req.body.quiz.pregunta;
+	req.quiz.respuesta = req.body.quiz.respuesta;
+
+	req.quiz.validate().then(function(err) {
+		if (err) {
+			res.render('quizes/new', { quiz: req.quiz, errors: err.errors });
+		} else {
+			// guarda en BD los campos pregunta y respuesta de quiz
+			req.quiz.save({fields: ["pregunta", "respuesta"]}).then(function() {
+				res.redirect('/quizes');
+			});		// Redirección HTTP (URL relativa) lista de preguntas
+		}
+	});
+};
+
+
 
 // Métodos auxiliares *****************************************************
+
 function comprobarRespuesta(respuesta, respuestaCorrecta) {
 	if (formatearCadena(respuesta) === formatearCadena(respuestaCorrecta)) {
 		return true;
