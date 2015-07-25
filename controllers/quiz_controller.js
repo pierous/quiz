@@ -16,7 +16,9 @@ exports.load = function(req, res, next, quizId) {
 
 // GET /quizes
 exports.index = function(req, res) {
-	models.Quiz.findAll().then(function(quizes) {
+	var search = (typeof(req.query.search) === "undefined") ? '%' : '%' + req.query.search + '%';
+	search = search.replace(' ', '%');
+	models.Quiz.findAll({where: ["pregunta like ?", search]}).then(function(quizes) {
 		res.render('quizes/index', { quizes: quizes });
 	}).catch(function(error) {
 		next(error);
@@ -38,6 +40,8 @@ exports.answer = function(req, res) {
 	res.render('quizes/answer', {quiz: req.quiz, respuesta: resultado});
 };
 
+
+// Métodos auxiliares *****************************************************
 function comprobarRespuesta(respuesta, respuestaCorrecta) {
 	if (formatearCadena(respuesta) === formatearCadena(respuestaCorrecta)) {
 		return true;
